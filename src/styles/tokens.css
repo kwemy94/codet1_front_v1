@@ -1,0 +1,76 @@
+/*
+  Jetons de design — CODET I
+  ---------------------------------------------------------------------------
+  Direction : un registre de comptes, tenu à la main puis porté à l'écran.
+  Fond très clair légèrement verdi, vert forêt profond pour l'action, ocre doré
+  réservé à l'argent. Les chiffres sont en chasse fixe tabulaire pour que les
+  colonnes de montants s'alignent au franc près.
+*/
+:root {
+  /* Couleurs */
+  --fond: #f6f8f7;
+  --surface: #ffffff;
+  --surface-douce: #f0f4f2;
+  --trait: #e2e8e5;
+  --trait-fort: #cbd6d1;
+
+  --encre: #16221e;
+  --encre-douce: #5b6b65;
+  --encre-tenue: #8a9994;
+
+  --primaire: #0f5c4a;
+  --primaire-vif: #14775f;
+  --primaire-voile: #e7f1ee;
+
+  --argent: #a76f12;          /* ocre doré : réservé aux montants */
+  --argent-voile: #fbf3e4;
+
+  --succes: #1c7a4d;
+  --succes-voile: #e6f4ed;
+  --attente: #a76f12;
+  --attente-voile: #fbf3e4;
+  --alerte: #a52d24;
+  --alerte-voile: #fbeceb;
+
+  /* Ventilation — élément signature */
+  --village: #0f5c4a;
+  --groupement: #a76f12;
+  --congres: #4a6f8a;
+  --codet: #7a4e9c;
+
+  /* Typographie */
+  --police-titre: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --police-texte: 'Public Sans', system-ui, -apple-system, sans-serif;
+  --police-chiffre: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --t-xs: 0.75rem;
+  --t-sm: 0.8125rem;
+  --t-base: 0.9375rem;
+  --t-md: 1.0625rem;
+  --t-lg: 1.375rem;
+  --t-xl: 1.875rem;
+  --t-2xl: 2.5rem;
+
+  /* Espacement, rayons, ombres */
+  --e-1: 4px;
+  --e-2: 8px;
+  --e-3: 12px;
+  --e-4: 16px;
+  --e-5: 24px;
+  --e-6: 32px;
+  --e-7: 48px;
+
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-plein: 999px;
+
+  --ombre-1: 0 1px 2px rgba(22, 34, 30, 0.04);
+  --ombre-2: 0 4px 16px rgba(22, 34, 30, 0.06);
+  --ombre-3: 0 12px 32px rgba(22, 34, 30, 0.10);
+
+  --transition: 160ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  --largeur-rail: 248px;
+  --largeur-contenu: 1180px;
+}

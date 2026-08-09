@@ -1,0 +1,48 @@
+import httpClient, { extraire } from './httpClient';
+
+export const paiementService = {
+  async lister(filtres = {}) {
+    return (await httpClient.get('/paiements', { params: filtres })).data;
+  },
+
+  async consulter(id) {
+    return extraire(await httpClient.get(`/paiements/${id}`));
+  },
+
+  /** Paiement mobile money déclenché par le membre. */
+  async initier({ carteId, contributionId, montant, moyenPaiement, numeroTelephone }) {
+    return extraire(
+      await httpClient.post('/paiements/initier', {
+        carte_developpement_id: carteId ?? null,
+        contribution_id: contributionId ?? null,
+        montant,
+        moyen_paiement: moyenPaiement,
+        numero_telephone: numeroTelephone,
+      }),
+    );
+  },
+
+  /** Encaissement hors ligne saisi par un administrateur. */
+  async enregistrerManuel({ carteId, contributionId, moyenPaiementId, montant, observation }) {
+    return extraire(
+      await httpClient.post('/paiements/manuel', {
+        carte_developpement_id: carteId ?? null,
+        contribution_id: contributionId ?? null,
+        moyen_paiement_id: moyenPaiementId,
+        montant,
+        observation,
+      }),
+    );
+  },
+
+  /** Interrogation du statut pendant l'attente de la confirmation opérateur. */
+  async statut(id) {
+    return extraire(await httpClient.get(`/paiements/${id}/statut`));
+  },
+
+  async annuler(id, motif) {
+    return extraire(await httpClient.post(`/paiements/${id}/annuler`, { motif }));
+  },
+};
+
+export default paiementService;

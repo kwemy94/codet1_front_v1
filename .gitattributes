@@ -1,0 +1,14 @@
+# Normalise les fins de ligne : indispensable quand une partie de l'équipe
+# travaille sous Windows et l'autre sous Linux ou macOS.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.svg text
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary

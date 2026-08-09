@@ -1,0 +1,83 @@
+.accueil {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+}
+
+.accueil__recit {
+  background: var(--primaire);
+  color: #fff;
+  padding: var(--e-7) var(--e-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--e-4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ruban de ventilation en filigrane : le motif fondateur du comité. */
+.accueil__recit::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--village) 0 48%,
+    var(--groupement) 48% 72%,
+    var(--congres) 72% 100%
+  );
+}
+
+.accueil__sceau {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.16);
+  display: grid;
+  place-items: center;
+  font-family: var(--police-titre);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.accueil__titre {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: #fff;
+  max-width: 14ch;
+}
+
+.accueil__texte {
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 44ch;
+  font-size: var(--t-md);
+}
+
+.accueil__parts {
+  list-style: none;
+  margin: var(--e-4) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-2);
+  font-size: var(--t-sm);
+  color: rgba(255, 255, 255, 0.78);
+}
+.accueil__parts li { display: flex; align-items: center; gap: var(--e-3); }
+.accueil__parts span { width: 22px; height: 6px; border-radius: 3px; flex: none; }
+
+.accueil__formulaire {
+  display: grid;
+  place-items: center;
+  padding: var(--e-5);
+  background: var(--fond);
+}
+.accueil__formulaire .carte { width: 100%; max-width: 380px; }
+
+@media (max-width: 860px) {
+  .accueil { grid-template-columns: 1fr; }
+  .accueil__recit { padding: var(--e-6) var(--e-4); }
+  .accueil__titre { font-size: 2rem; }
+}

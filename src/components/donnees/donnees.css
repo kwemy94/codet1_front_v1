@@ -1,0 +1,109 @@
+/* --------------------------------------------------- Ruban de ventilation */
+.ruban-bloc { display: flex; flex-direction: column; gap: var(--e-2); }
+
+.ruban {
+  display: flex;
+  width: 100%;
+  border-radius: var(--r-plein);
+  overflow: hidden;
+  background: var(--surface-douce);
+}
+
+.ruban__part { transition: width 320ms cubic-bezier(0.2, 0.7, 0.3, 1); }
+
+.ruban__legende {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-2) var(--e-4);
+}
+.ruban__legende li { display: flex; align-items: center; gap: 6px; font-size: var(--t-sm); }
+.ruban__legende--compact li { font-size: var(--t-xs); }
+.ruban__puce { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.ruban__nom { color: var(--encre-douce); }
+.ruban__valeur { color: var(--encre); font-weight: 500; }
+
+/* ------------------------------------------------------------------ Barres */
+.barres {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--e-2);
+  padding-top: var(--e-5);
+}
+.barres__colonne {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 6px;
+}
+.barres__barre {
+  width: 100%;
+  max-width: 52px;
+  background: linear-gradient(180deg, var(--primaire-vif), var(--primaire));
+  border-radius: var(--r-sm) var(--r-sm) 2px 2px;
+  transition: height 420ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.barres__colonne:hover .barres__barre { background: var(--argent); }
+.barres__valeur { font-size: var(--t-xs); color: var(--encre-douce); }
+.barres__annee { font-size: var(--t-xs); color: var(--encre-tenue); }
+
+/* ------------------------------------------------------------------- Jauge */
+.jauge-bloc { display: flex; flex-direction: column; gap: var(--e-2); }
+.jauge__taux { font-size: var(--t-lg); font-weight: 600; color: var(--encre); }
+.jauge {
+  height: 10px;
+  background: var(--surface-douce);
+  border-radius: var(--r-plein);
+  overflow: hidden;
+}
+.jauge__remplissage {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--primaire), var(--primaire-vif));
+  border-radius: var(--r-plein);
+  transition: width 480ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* ------------------------------------------------------------ Choix membre */
+.choix-membre__retenu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-3);
+  border: 1px solid var(--trait-fort);
+  border-radius: var(--r-md);
+  padding: 8px 8px 8px 12px;
+  background: var(--surface-douce);
+}
+
+.choix-membre__liste {
+  margin-top: 6px;
+  border: 1px solid var(--trait);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--ombre-2);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.choix-membre__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-3);
+  width: 100%;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  padding: 9px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--trait);
+  transition: background var(--transition);
+}
+.choix-membre__option:last-child { border-bottom: none; }
+.choix-membre__option:hover { background: var(--primaire-voile); }
