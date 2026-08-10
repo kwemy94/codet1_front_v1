@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" width="240" height="180" role="img" aria-label="CO.SU.DE.G.BANG">
+  <title>CO.SU.DE.G.BANG — Comité supérieur de développement du groupement Bangang</title>
+
+  <rect x="4" y="4" width="232" height="172" rx="4" fill="#FDFDF8" stroke="#C0161C" stroke-width="5"/>
+
+  <!-- Oiseau en vol, barré d'un trait rouge -->
+  <g transform="translate(120 68) scale(0.8) translate(-120 -68)">
+    <path d="M 52 78 C 80 46 118 36 156 42 C 134 48 114 60 98 76 C 122 68 148 66 174 72
+             C 146 76 120 86 100 102 C 84 94 66 88 52 78 Z" fill="#1C3F94"/>
+    <path d="M 156 42 C 172 38 188 40 200 46 C 184 46 170 50 158 56 Z" fill="#1C3F94"/>
+    <path d="M 46 100 L 206 34" stroke="#C0161C" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Frise de personnages : le groupement rassemblé -->
+  <g transform="translate(72 108)">
+    <g fill="#1C3F94">
+      <circle cx="0" cy="0" r="4.5"/><rect x="-4.5" y="6" width="9" height="15" rx="4"/>
+      <circle cx="24" cy="0" r="4.5"/><rect x="19.5" y="6" width="9" height="15" rx="4"/>
+      <circle cx="48" cy="0" r="4.5"/><rect x="43.5" y="6" width="9" height="15" rx="4"/>
+      <circle cx="72" cy="0" r="4.5"/><rect x="67.5" y="6" width="9" height="15" rx="4"/>
+      <circle cx="96" cy="0" r="4.5"/><rect x="91.5" y="6" width="9" height="15" rx="4"/>
+    </g>
+    <path d="M 4 11 L 20 11 M 28 11 L 44 11 M 52 11 L 68 11 M 76 11 L 92 11"
+          stroke="#C0161C" stroke-width="2.6" stroke-linecap="round"/>
+  </g>
+
+  <text x="120" y="158" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
+        font-size="17" font-weight="700" fill="#C0161C" letter-spacing="0.2">CO.SU.DE.G.BANG</text>
+</svg>

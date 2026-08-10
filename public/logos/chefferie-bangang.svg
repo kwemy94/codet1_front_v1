@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="220" height="220" role="img" aria-label="Chefferie supérieure de Bangang">
+  <title>Chefferie supérieure de Bangang</title>
+
+  <defs>
+    <!-- Le texte se pose au-dessus de son chemin : l'arc est donc tracé en
+         retrait du cercle intérieur pour que la légende reste dans le disque. -->
+    <!-- Arc de 220° : un demi-cercle était trop court, la légende s'y trouvait
+         tronquée (« FFERIE SUPÉRIEURE DE BANG »). -->
+    <path id="arcChefferie" d="M 36.7 136.7 A 78 78 0 1 1 183.3 136.7" fill="none"/>
+  </defs>
+
+  <circle cx="110" cy="110" r="107" fill="#FDFDF8" stroke="#C0161C" stroke-width="4"/>
+  <circle cx="110" cy="110" r="97" fill="none" stroke="#C0161C" stroke-width="1.6"/>
+
+  <!-- Taille calibrée sur la police de repli la plus large (DejaVu Serif) :
+       la légende doit tenir entière même si Georgia n'est pas installée. -->
+  <text font-family="Georgia, 'Times New Roman', serif" font-size="11" font-weight="700"
+        fill="#C0161C" letter-spacing="0.2">
+    <textPath href="#arcChefferie" startOffset="50%" text-anchor="middle">
+      CHEFFERIE SUPÉRIEURE DE BANGANG
+    </textPath>
+  </text>
+
+  <!-- Case à toit conique de la chefferie -->
+  <g>
+    <path d="M 110 68 L 158 122 L 62 122 Z" fill="#1C3F94"/>
+    <g stroke="#FDFDF8" stroke-width="1.4" opacity="0.6">
+      <path d="M 82 112 L 138 112"/>
+      <path d="M 89 103 L 131 103"/>
+      <path d="M 96 94 L 124 94"/>
+      <path d="M 102 85 L 118 85"/>
+    </g>
+    <path d="M 110 62 L 110 70" stroke="#1C3F94" stroke-width="3.5" stroke-linecap="round"/>
+    <circle cx="110" cy="60" r="3.5" fill="#C0161C"/>
+
+    <rect x="70" y="122" width="80" height="28" fill="#1C3F94"/>
+    <g fill="#FDFDF8">
+      <rect x="77" y="126" width="6" height="20" rx="2"/>
+      <rect x="92" y="126" width="6" height="20" rx="2"/>
+      <rect x="122" y="126" width="6" height="20" rx="2"/>
+      <rect x="137" y="126" width="6" height="20" rx="2"/>
+    </g>
+    <path d="M 104 150 L 104 133 Q 110 126 116 133 L 116 150 Z" fill="#FDFDF8"/>
+    <g fill="#C0161C">
+      <circle cx="80" cy="131" r="1.3"/><circle cx="80" cy="136" r="1.3"/><circle cx="80" cy="141" r="1.3"/>
+      <circle cx="95" cy="131" r="1.3"/><circle cx="95" cy="136" r="1.3"/><circle cx="95" cy="141" r="1.3"/>
+      <circle cx="125" cy="131" r="1.3"/><circle cx="125" cy="136" r="1.3"/><circle cx="125" cy="141" r="1.3"/>
+      <circle cx="140" cy="131" r="1.3"/><circle cx="140" cy="136" r="1.3"/><circle cx="140" cy="141" r="1.3"/>
+    </g>
+  </g>
+
+  <!-- Bandeau du nom, inscrit dans le disque -->
+  <rect x="62" y="158" width="96" height="24" rx="3" fill="#C0161C"/>
+  <text x="110" y="175" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
+        font-size="16" font-weight="700" fill="#FDFDF8" letter-spacing="1">BANGANG</text>
+</svg>
