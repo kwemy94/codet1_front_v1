@@ -17,6 +17,7 @@
 }
 
 /* Ruban de ventilation en filigrane : le motif fondateur du comité. */
+/* Bande de cuve : les trois postes, du plus teint au plus clair. */
 .accueil__recit::after {
   content: '';
   position: absolute;
@@ -29,6 +30,24 @@
     var(--congres) 72% 100%
   );
 }
+
+/*
+ * Trame du Ndop : les réserves de couture laissent apparaître le coton écru
+ * sous forme de fines lignes croisées. Très discrète, elle donne au panneau
+ * la texture d'un tissu plutôt que celle d'un aplat.
+ */
+.accueil__recit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0 13px, rgba(239, 233, 220, 0.55) 13px 14px),
+    repeating-linear-gradient(-45deg, transparent 0 13px, rgba(239, 233, 220, 0.35) 13px 14px);
+}
+
+.accueil__recit > * { position: relative; z-index: 1; }
 
 .accueil__sceau {
   width: 44px; height: 44px;

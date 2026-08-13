@@ -15,8 +15,28 @@ export const messageService = {
     return extraire(await httpClient.post('/messages', formulaire));
   },
 
-  async repondre(id, contenu) {
-    return extraire(await httpClient.post(`/messages/${id}/repondre`, { contenu }));
+  async repondre(id, contenu, fichiers) {
+    const formulaire = new FormData();
+    formulaire.append('contenu', contenu);
+    Array.from(fichiers ?? []).forEach((fichier) => formulaire.append('fichiers[]', fichier));
+
+    return extraire(await httpClient.post(`/messages/${id}/repondre`, formulaire));
+  },
+
+  /** Téléchargement d'une pièce jointe. La consultation est journalisée. */
+  async telechargerPieceJointe(messageId, documentId, nomFichier) {
+    const reponse = await httpClient.get(`/messages/${messageId}/documents/${documentId}`, {
+      responseType: 'blob',
+    });
+
+    const url = URL.createObjectURL(reponse.data);
+    const lien = document.createElement('a');
+    lien.href = url;
+    lien.download = nomFichier ?? 'piece-jointe';
+    document.body.appendChild(lien);
+    lien.click();
+    lien.remove();
+    URL.revokeObjectURL(url);
   },
 
   async marquerTraite(id) {

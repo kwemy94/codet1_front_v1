@@ -1,6 +1,11 @@
 import { formaterMontant } from '@/utils/format';
 import './donnees.css';
 
+/*
+ * Les destinations se lisent comme un dégradé de cuve d'indigo : du plus foncé
+ * (village) au plus clair (congrès), l'écru sombre pour le compte du comité.
+ * C'est la logique même d'un Ndop, où le motif naît des nuances de teinture.
+ */
 const COULEURS = {
   VILLAGE: 'var(--village)',
   GROUPEMENT: 'var(--groupement)',
@@ -15,8 +20,8 @@ const LIBELLES = {
   CODET: 'CODET I',
 };
 
-/** Couleur de repli, dérivée du code, pour les destinations créées par le comité. */
-const TEINTES = ['#4A6F8A', '#7A4E9C', '#0F5C4A', '#A76F12', '#8A5A4A', '#3F7A8C'];
+/** Repli pour les destinations créées par le comité : nuances de la même cuve. */
+const TEINTES = ['#1e3462', '#3c5c96', '#8aa3ca', '#a89a7c', '#243d70', '#5878ad'];
 
 function couleurDe(code) {
   if (COULEURS[code]) return COULEURS[code];

@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { membreService } from "@/services";
-import { notifier } from "@/store/notificationStore";
-import Bouton from "@/components/ui/Bouton";
-import Modale from "@/components/ui/Modale";
-import "./donnees.css";
+import { useState } from 'react';
+import { membreService } from '@/services';
+import { notifier } from '@/store/notificationStore';
+import Bouton from '@/components/ui/Bouton';
+import Modale from '@/components/ui/Modale';
+import './donnees.css';
 
 /**
  * Ouverture de l'accès d'un membre à son espace personnel.
@@ -40,11 +40,9 @@ export default function AccesMembre({ membre, surChangement }) {
   const copier = async (texte) => {
     try {
       await navigator.clipboard.writeText(texte);
-      notifier.succes("Mot de passe copié.");
+      notifier.succes('Mot de passe copié.');
     } catch {
-      notifier.alerte(
-        "La copie automatique a échoué. Sélectionnez le mot de passe et copiez-le à la main.",
-      );
+      notifier.alerte('La copie automatique a échoué. Sélectionnez le mot de passe et copiez-le à la main.');
     }
   };
 
@@ -53,10 +51,10 @@ export default function AccesMembre({ membre, surChangement }) {
 
     const texte = [
       `${membre.nom_complet} — accès à l'espace CODET I`,
-      `Identifiant : ${resultat.identifiants.join(" ou ")}`,
+      `Identifiant : ${resultat.identifiants.join(' ou ')}`,
       `Mot de passe provisoire : ${resultat.mot_de_passe_provisoire}`,
-      "À la première connexion, choisissez votre propre mot de passe.",
-    ].join("\n");
+      'À la première connexion, choisissez votre propre mot de passe.',
+    ].join('\n');
 
     copier(texte);
   };
@@ -67,26 +65,18 @@ export default function AccesMembre({ membre, surChangement }) {
         variante="contour"
         taille="petit"
         chargement={enCours}
-        onClick={() =>
-          executer(
-            aUnAcces
-              ? membreService.reinitialiserMotDePasse
-              : membreService.creerAcces,
-          )
-        }
+        onClick={() => executer(aUnAcces ? membreService.reinitialiserMotDePasse : membreService.creerAcces)}
       >
-        {aUnAcces ? "Réinitialiser son mot de passe" : "Créer son accès"}
+        {aUnAcces ? 'Réinitialiser son mot de passe' : 'Créer son accès'}
       </Bouton>
 
       <Modale
-        titre={aUnAcces ? "Nouveau mot de passe provisoire" : "Accès créé"}
+        titre={aUnAcces ? 'Nouveau mot de passe provisoire' : 'Accès créé'}
         ouverte={Boolean(resultat)}
         surFermeture={fermer}
         pied={
           <>
-            <Bouton variante="contour" onClick={copierTout}>
-              Copier le message complet
-            </Bouton>
+            <Bouton variante="contour" onClick={copierTout}>Copier le message complet</Bouton>
             <Bouton onClick={fermer}>J'ai noté le mot de passe</Bouton>
           </>
         }
@@ -94,23 +84,18 @@ export default function AccesMembre({ membre, surChangement }) {
         {resultat && (
           <div className="pile">
             <div className="message message--alerte">
-              Ce mot de passe n'est affiché qu'une seule fois. Notez-le ou
-              copiez-le maintenant : il ne pourra pas être retrouvé, seulement
-              réinitialisé.
+              Ce mot de passe n'est affiché qu'une seule fois. Notez-le ou copiez-le
+              maintenant : il ne pourra pas être retrouvé, seulement réinitialisé.
             </div>
 
             <div>
               <p className="surtitre">Identifiant de connexion</p>
               {resultat.identifiants.map((identifiant) => (
-                <p
-                  key={identifiant}
-                  className="chiffre acces__valeur"
-                  style={{ margin: 0 }}
-                >
+                <p key={identifiant} className="chiffre acces__valeur" style={{ margin: 0 }}>
                   {identifiant}
                 </p>
               ))}
-              <p className="tenu" style={{ margin: "4px 0 0" }}>
+              <p className="tenu" style={{ margin: '4px 0 0' }}>
                 Le membre peut se connecter avec l'un ou l'autre.
               </p>
             </div>
@@ -118,9 +103,7 @@ export default function AccesMembre({ membre, surChangement }) {
             <div>
               <p className="surtitre">Mot de passe provisoire</p>
               <div className="acces__mot-de-passe">
-                <span className="chiffre acces__code">
-                  {resultat.mot_de_passe_provisoire}
-                </span>
+                <span className="chiffre acces__code">{resultat.mot_de_passe_provisoire}</span>
                 <Bouton
                   variante="contour"
                   taille="petit"
@@ -129,15 +112,14 @@ export default function AccesMembre({ membre, surChangement }) {
                   Copier
                 </Bouton>
               </div>
-              <p className="tenu" style={{ margin: "6px 0 0" }}>
-                Sans caractère ambigu : ni O ni 0, ni I ni 1 — il peut être
-                dicté au téléphone.
+              <p className="tenu" style={{ margin: '6px 0 0' }}>
+                Sans caractère ambigu : ni O ni 0, ni I ni 1 — il peut être dicté au téléphone.
               </p>
             </div>
 
             <p className="tenu" style={{ margin: 0 }}>
-              Transmettez-le par SMS ou WhatsApp. À sa première connexion, le
-              membre devra choisir son propre mot de passe.
+              Transmettez-le par SMS ou WhatsApp. À sa première connexion, le membre
+              devra choisir son propre mot de passe.
             </p>
           </div>
         )}

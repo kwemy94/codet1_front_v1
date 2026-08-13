@@ -15,6 +15,7 @@ import Reversement from '@/pages/finances/Reversement';
 import Contributions from '@/pages/Contributions';
 import RapportsAg from '@/pages/documents/RapportsAg';
 import Messages from '@/pages/Messages';
+import Courriels from '@/pages/communication/Courriels';
 import MonEspace from '@/pages/espace/MonEspace';
 import MesPaiements from '@/pages/espace/MesPaiements';
 import MotDePasse from '@/pages/MotDePasse';
@@ -54,6 +55,7 @@ export const routes = createBrowserRouter([
 
       { path: 'rapports-ag', element: <RapportsAg /> },
       { path: 'messages', element: <Messages /> },
+      { path: 'courriels', element: gestion(<Courriels />) },
 
       { path: 'mot-de-passe', element: <MotDePasse /> },
 

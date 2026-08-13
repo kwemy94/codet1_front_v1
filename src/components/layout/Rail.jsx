@@ -17,6 +17,7 @@ const ADMINISTRATION = [
 const COMITE = [
   { vers: '/rapports-ag', libelle: "Rapports d'AG", glyphe: '▥' },
   { vers: '/messages', libelle: 'Messages', glyphe: '✉' },
+  { vers: '/courriels', libelle: 'Courriels aux membres', glyphe: '➤' },
 ];
 
 const REGLAGES = [

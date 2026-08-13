@@ -65,6 +65,7 @@ const TITRES = {
   '/reversement': 'Reversement au CODET I',
   '/rapports-ag': "Rapports d'Assemblée Générale",
   '/messages': 'Messages',
+  '/courriels': 'Courriels aux membres',
   '/tarifs': 'Tarifs et exercices',
   '/parametres': 'Paramètres',
   '/journal': 'Journal des actions',

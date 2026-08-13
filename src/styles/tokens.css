@@ -1,44 +1,74 @@
 /*
   Jetons de design — CODET I
   ---------------------------------------------------------------------------
-  Direction : un registre de comptes, tenu à la main puis porté à l'écran.
-  Fond très clair légèrement verdi, vert forêt profond pour l'action, ocre doré
-  réservé à l'argent. Les chiffres sont en chasse fixe tabulaire pour que les
-  colonnes de montants s'alignent au franc près.
+  Charte inspirée du Ndop, le tissu de prestige des Grassfields bamiléké :
+  coton écru plongé dans une cuve d'indigo, les motifs naissant des zones
+  réservées par la couture. Trois couleurs, pas une de plus.
+
+    1. INDIGO PROFOND  #1E3462   la cuve, le bleu-nuit des pièces d'apparat
+    2. INDIGO PÂLI     #6C8ABF   les reprises de teinture, les bords délavés
+    3. ÉCRU            #EFE9DC   le coton non teint, les réserves du motif
+
+  Tout le reste — fonds, traits, encres, états — descend de ces trois teintes
+  par éclaircissement ou assombrissement. Un unique signal fonctionnel, la
+  terre cuite, marque les impayés : c'est la seule couleur qui ne vienne pas
+  de la palette, et elle ne sert qu'à cela.
 */
 :root {
-  /* Couleurs */
-  --fond: #f6f8f7;
-  --surface: #ffffff;
-  --surface-douce: #f0f4f2;
-  --trait: #e2e8e5;
-  --trait-fort: #cbd6d1;
+  /* ————— Les trois couleurs */
+  --indigo: #1e3462;
+  --indigo-pali: #6c8abf;
+  --ecru: #efe9dc;
 
-  --encre: #16221e;
-  --encre-douce: #5b6b65;
-  --encre-tenue: #8a9994;
+  /* ————— Déclinaisons de l'indigo */
+  --indigo-nuit: #14224a;
+  --indigo-vif: #2a4784;
+  --indigo-voile: #e4e9f4;
 
-  --primaire: #0f5c4a;
-  --primaire-vif: #14775f;
-  --primaire-voile: #e7f1ee;
+  /* ————— Déclinaisons de l'indigo pâli */
+  --pali-voile: #eef2f9;
+  --pali-sombre: #4d6a99;
 
-  --argent: #a76f12;          /* ocre doré : réservé aux montants */
-  --argent-voile: #fbf3e4;
+  /* ————— Déclinaisons de l'écru */
+  --fond: #f7f4ee;
+  --surface: #fffdf9;
+  --surface-douce: #f2ede3;
+  --trait: #e2dccf;
+  --trait-fort: #cdc5b4;
 
-  --succes: #1c7a4d;
-  --succes-voile: #e6f4ed;
-  --attente: #a76f12;
-  --attente-voile: #fbf3e4;
-  --alerte: #a52d24;
-  --alerte-voile: #fbeceb;
+  /* ————— Encres : l'indigo désaturé, jamais du noir */
+  --encre: #1a2233;
+  --encre-douce: #55607a;
+  --encre-tenue: #69728a;   /* assombri pour atteindre le seuil AA (4,5:1) */
 
-  /* Ventilation — élément signature */
-  --village: #0f5c4a;
-  --groupement: #a76f12;
-  --congres: #4a6f8a;
-  --codet: #7a4e9c;
+  /* ————— Rôles */
+  --primaire: var(--indigo);
+  --primaire-vif: var(--indigo-vif);
+  --primaire-voile: var(--indigo-voile);
 
-  /* Typographie */
+  /* Les montants portent l'indigo pâli : lisibles sans crier, distincts du texte */
+  --argent: var(--pali-sombre);
+  --argent-voile: var(--pali-voile);
+
+  /* ————— États : trois nuances d'indigo plutôt que trois couleurs */
+  --succes: var(--indigo);
+  --succes-voile: var(--indigo-voile);
+  --attente: var(--pali-sombre);
+  --attente-voile: var(--pali-voile);
+
+  /* Seul signal hors palette : l'impayé doit sauter aux yeux du trésorier */
+  --alerte: #9c4a2f;
+  --alerte-voile: #f6ebe6;
+
+  /* ————— Ventilation : les quatre postes se lisent en dégradé de cuve,
+     du plus foncé (village) au plus clair (congrès), l'écru sombre pour
+     le compte du comité. C'est exactement la logique d'un Ndop. */
+  --village: #14224a;      /* cuve profonde */
+  --groupement: #3c5c96;   /* seconde teinture */
+  --congres: #8aa3ca;      /* bord délavé */
+  --codet: #cbbfa3;        /* écru sombre, le coton réservé */
+
+  /* ————— Typographie */
   --police-titre: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
   --police-texte: 'Public Sans', system-ui, -apple-system, sans-serif;
   --police-chiffre: 'IBM Plex Mono', ui-monospace, monospace;
@@ -51,7 +81,7 @@
   --t-xl: 1.875rem;
   --t-2xl: 2.5rem;
 
-  /* Espacement, rayons, ombres */
+  /* ————— Espacement, rayons, ombres */
   --e-1: 4px;
   --e-2: 8px;
   --e-3: 12px;
@@ -65,9 +95,9 @@
   --r-lg: 16px;
   --r-plein: 999px;
 
-  --ombre-1: 0 1px 2px rgba(22, 34, 30, 0.04);
-  --ombre-2: 0 4px 16px rgba(22, 34, 30, 0.06);
-  --ombre-3: 0 12px 32px rgba(22, 34, 30, 0.10);
+  --ombre-1: 0 1px 2px rgba(30, 52, 98, 0.05);
+  --ombre-2: 0 4px 16px rgba(30, 52, 98, 0.08);
+  --ombre-3: 0 12px 32px rgba(30, 52, 98, 0.14);
 
   --transition: 160ms cubic-bezier(0.4, 0, 0.2, 1);
 

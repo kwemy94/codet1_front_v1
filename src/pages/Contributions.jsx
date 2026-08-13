@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { contributionService, exerciceService, referentielService } from '@/services';
+import { contributionService, exerciceService, exportService, referentielService } from '@/services';
 import { useRequete } from '@/hooks/useRequete';
 import { notifier } from '@/store/notificationStore';
 import { Carte } from '@/components/ui/Carte';
@@ -10,18 +10,86 @@ import Etiquette from '@/components/ui/Etiquette';
 import Modale from '@/components/ui/Modale';
 import { Chargement, Erreur, Vide } from '@/components/ui/Etats';
 import ChoixMembre from '@/components/donnees/ChoixMembre';
+import PaiementManuel from './finances/PaiementManuel';
 import { appliquerErreursApi, formaterDate, formaterMontant } from '@/utils/format';
 
 export default function Contributions() {
   const [saisieOuverte, setSaisieOuverte] = useState(false);
-  const { donnees, chargement, erreur, recharger } = useRequete(() => contributionService.lister(), []);
+  const [exerciceId, setExerciceId] = useState('');
+  const [statut, setStatut] = useState('');
+  const [exportEnCours, setExportEnCours] = useState(false);
+
+  const exercices = useRequete(() => exerciceService.lister(), []);
+
+  const filtres = useMemo(
+    () => ({ exercice_id: exerciceId || undefined, statut: statut || undefined }),
+    [exerciceId, statut],
+  );
+
+  const { donnees, chargement, erreur, recharger } = useRequete(
+    () => contributionService.lister(filtres),
+    [filtres],
+  );
+
   const contributions = donnees?.data ?? [];
+
+  /** L'état édité reprend les filtres affichés. */
+  const exporter = async () => {
+    setExportEnCours(true);
+    try {
+      const annee = (exercices.donnees ?? []).find((e) => String(e.id) === String(exerciceId))?.annee;
+      await exportService.contributions({ exerciceId: exerciceId || null, annee, statut });
+    } catch (probleme) {
+      notifier.alerte(probleme.message);
+    } finally {
+      setExportEnCours(false);
+    }
+  };
 
   return (
     <div className="pile">
-      <div className="rang rang--fin">
-        <Bouton onClick={() => setSaisieOuverte(true)}>Enregistrer une contribution</Bouton>
-      </div>
+      <Carte serree>
+        <div className="rang" style={{ flexWrap: 'wrap' }}>
+          <Champ
+            type="select"
+            value={exerciceId}
+            onChange={(evenement) => setExerciceId(evenement.target.value)}
+            aria-label="Exercice"
+            options={[
+              { valeur: '', libelle: 'Tous les exercices' },
+              ...(exercices.donnees ?? []).map((exercice) => ({
+                valeur: exercice.id,
+                libelle: `Exercice ${exercice.annee}`,
+              })),
+            ]}
+          />
+
+          <Champ
+            type="select"
+            value={statut}
+            onChange={(evenement) => setStatut(evenement.target.value)}
+            aria-label="Statut de la contribution"
+            options={[
+              { valeur: '', libelle: 'Tous les statuts' },
+              { valeur: 'attendue', libelle: 'Attendues' },
+              { valeur: 'encaissee', libelle: 'Encaissées' },
+              { valeur: 'recue', libelle: 'Reçues (dons en nature)' },
+              { valeur: 'annulee', libelle: 'Annulées' },
+            ]}
+          />
+
+          <Bouton
+            variante="contour"
+            className="pousse"
+            chargement={exportEnCours}
+            onClick={exporter}
+          >
+            {statut ? 'Exporter la sélection (PDF)' : 'État des contributions (PDF)'}
+          </Bouton>
+
+          <Bouton onClick={() => setSaisieOuverte(true)}>Enregistrer une contribution</Bouton>
+        </div>
+      </Carte>
 
       {chargement && <Chargement lignes={5} />}
       {erreur && <Erreur message={erreur.message} surReessai={recharger} />}
@@ -29,8 +97,16 @@ export default function Contributions() {
       <Carte className="carte--nue">
         {!chargement && contributions.length === 0 && (
           <Vide
-            titre="Aucune contribution enregistrée"
-            texte="Dons des membres, des entreprises, des associations ou des partenaires se saisissent ici."
+            titre={
+              exerciceId || statut
+                ? 'Aucune contribution pour ce filtre'
+                : 'Aucune contribution enregistrée'
+            }
+            texte={
+              exerciceId || statut
+                ? "Élargissez le filtre, ou enregistrez une nouvelle contribution."
+                : 'Dons des membres, des entreprises, des associations ou des partenaires se saisissent ici.'
+            }
             action={<Bouton onClick={() => setSaisieOuverte(true)}>Enregistrer une contribution</Bouton>}
           />
         )}
@@ -68,6 +144,12 @@ export default function Contributions() {
                       {formaterMontant(contribution.montant, { devise: false })}
                       {contribution.nature !== 'financier' && (
                         <span className="tenu" style={{ display: 'block' }}>valeur estimée</span>
+                      )}
+                      {contribution.nature === 'financier' && Number(contribution.montant_regle ?? 0) > 0
+                        && contribution.statut === 'attendue' && (
+                        <span className="tenu" style={{ display: 'block' }}>
+                          reste {formaterMontant(contribution.solde, { devise: false })}
+                        </span>
                       )}
                     </td>
                     <td className="silence chiffre">{formaterDate(contribution.date_contribution)}</td>
@@ -309,9 +391,11 @@ const LIBELLE_NATURE = {
  */
 function ActionsStatut({ contribution, surChangement }) {
   const [enCours, setEnCours] = useState(false);
+  const [encaissementOuvert, setEncaissementOuvert] = useState(false);
 
   const enAttente = contribution.statut === 'attendue';
   const materielle = contribution.nature !== 'financier';
+  const dejaRegle = Number(contribution.montant_regle ?? 0);
 
   const changer = async (statut) => {
     setEnCours(true);
@@ -331,16 +415,34 @@ function ActionsStatut({ contribution, surChangement }) {
   }
 
   return (
-    <div className="rang rang--fin" style={{ gap: 'var(--e-1)' }}>
-      {materielle && (
-        <Bouton variante="discret" taille="petit" chargement={enCours} onClick={() => changer('recue')}>
-          Marquer reçu
+    <>
+      <div className="rang rang--fin" style={{ gap: 'var(--e-1)' }}>
+        {materielle ? (
+          <Bouton variante="discret" taille="petit" chargement={enCours} onClick={() => changer('recue')}>
+            Marquer reçu
+          </Bouton>
+        ) : (
+          <Bouton variante="discret" taille="petit" onClick={() => setEncaissementOuvert(true)}>
+            {dejaRegle > 0 ? 'Compléter' : 'Encaisser'}
+          </Bouton>
+        )}
+
+        <Bouton variante="discret" taille="petit" chargement={enCours} onClick={() => changer('annulee')}>
+          Annuler
         </Bouton>
+      </div>
+
+      {encaissementOuvert && (
+        <PaiementManuel
+          contribution={contribution}
+          surFermeture={() => setEncaissementOuvert(false)}
+          surEnregistrement={() => {
+            setEncaissementOuvert(false);
+            surChangement?.();
+          }}
+        />
       )}
-      <Bouton variante="discret" taille="petit" chargement={enCours} onClick={() => changer('annulee')}>
-        Annuler
-      </Bouton>
-    </div>
+    </>
   );
 }
 

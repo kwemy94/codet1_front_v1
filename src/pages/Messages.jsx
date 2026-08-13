@@ -59,6 +59,8 @@ export default function Messages() {
 
           <p className="silence" style={{ marginTop: 'var(--e-3)', whiteSpace: 'pre-wrap' }}>{message.contenu}</p>
 
+          <PiecesJointes message={message} pieces={message.pieces_jointes} />
+
           {(message.reponses ?? []).map((reponse) => (
             <div
               key={reponse.id}
@@ -67,6 +69,8 @@ export default function Messages() {
             >
               <p className="surtitre">Réponse du comité · {formaterDateHeure(reponse.date_envoi)}</p>
               <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{reponse.contenu}</p>
+
+              <PiecesJointes message={reponse} pieces={reponse.pieces_jointes} />
             </div>
           ))}
 
@@ -99,6 +103,77 @@ export default function Messages() {
           recharger();
         }}
       />
+    </div>
+  );
+}
+
+/** Convertit une taille en octets en une mention lisible. */
+function taillePieceJointe(octets) {
+  const valeur = Number(octets ?? 0);
+  if (!valeur) return '';
+  if (valeur < 1024) return `${valeur} o`;
+  if (valeur < 1024 * 1024) return `${Math.round(valeur / 1024)} Ko`;
+  return `${(valeur / (1024 * 1024)).toFixed(1).replace('.', ',')} Mo`;
+}
+
+const GLYPHES = {
+  pdf: 'PDF',
+  doc: 'DOC', docx: 'DOC',
+  jpg: 'IMG', jpeg: 'IMG', png: 'IMG',
+};
+
+/**
+ * Pièces jointes d'un message. Le fichier est récupéré en binaire pour que la
+ * requête porte le jeton d'authentification : un lien direct ne le ferait pas,
+ * et le serveur refuserait l'accès.
+ */
+function PiecesJointes({ message, pieces }) {
+  const [enCours, setEnCours] = useState(null);
+
+  if (!pieces?.length) return null;
+
+  const telecharger = async (piece) => {
+    setEnCours(piece.id);
+    try {
+      await messageService.telechargerPieceJointe(message.id, piece.id, piece.nom_fichier);
+    } catch (erreur) {
+      notifier.alerte(erreur.message);
+    } finally {
+      setEnCours(null);
+    }
+  };
+
+  return (
+    <div className="pieces">
+      <p className="surtitre">
+        {pieces.length} pièce{pieces.length > 1 ? 's' : ''} jointe{pieces.length > 1 ? 's' : ''}
+      </p>
+
+      <ul className="pieces__liste">
+        {pieces.map((piece) => {
+          const extension = (piece.nom_fichier ?? '').split('.').pop()?.toLowerCase();
+
+          return (
+            <li key={piece.id}>
+              <button
+                type="button"
+                className="piece"
+                onClick={() => telecharger(piece)}
+                disabled={enCours === piece.id}
+              >
+                <span className="piece__type">{GLYPHES[extension] ?? 'FIC'}</span>
+                <span className="piece__nom">
+                  {piece.nom_fichier}
+                  <span className="tenu">{taillePieceJointe(piece.taille)}</span>
+                </span>
+                <span className="piece__action">
+                  {enCours === piece.id ? <span className="rotation" /> : '↓'}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
@@ -148,15 +223,17 @@ function ModaleRedaction({ ouverte, surFermeture, surEnvoi }) {
 }
 
 function ModaleReponse({ message, surFermeture, surEnvoi }) {
+  const [fichiers, setFichiers] = useState([]);
   const { register, handleSubmit, reset, setError, formState: { errors, isSubmitting } } = useForm();
 
   if (!message) return null;
 
   const soumettre = async ({ contenu }) => {
     try {
-      await messageService.repondre(message.id, contenu);
+      await messageService.repondre(message.id, contenu, fichiers);
       notifier.succes('Réponse envoyée.');
       reset();
+      setFichiers([]);
       surEnvoi?.();
     } catch (erreur) {
       setError('root', { message: erreur.message });
@@ -178,6 +255,17 @@ function ModaleReponse({ message, surFermeture, surEnvoi }) {
       <form className="pile" onSubmit={handleSubmit(soumettre)} noValidate>
         {errors.root && <div className="message message--alerte">{errors.root.message}</div>}
         <Champ label="Réponse" type="textarea" {...register('contenu', { required: true })} />
+
+        <div className="champ">
+          <span className="champ__label">Pièces jointes</span>
+          <input
+            type="file"
+            multiple
+            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+            onChange={(evenement) => setFichiers(Array.from(evenement.target.files))}
+          />
+          <span className="champ__aide">5 fichiers au plus, 10 Mo chacun.</span>
+        </div>
       </form>
     </Modale>
   );

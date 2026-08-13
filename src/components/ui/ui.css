@@ -237,7 +237,7 @@
 .vide__titre { font-family: var(--police-titre); font-size: var(--t-md); color: var(--encre); }
 
 .squelette {
-  background: linear-gradient(90deg, var(--surface-douce) 25%, #e9efec 37%, var(--surface-douce) 63%);
+  background: linear-gradient(90deg, var(--surface-douce) 25%, var(--trait) 37%, var(--surface-douce) 63%);
   background-size: 400% 100%;
   animation: glisse 1.2s ease-in-out infinite;
   border-radius: var(--r-sm);
@@ -253,9 +253,9 @@
   font-size: var(--t-base);
   border: 1px solid transparent;
 }
-.message--alerte { background: var(--alerte-voile); color: var(--alerte); border-color: #f3d5d2; }
-.message--succes { background: var(--succes-voile); color: var(--succes); border-color: #cfe7db; }
-.message--info { background: var(--primaire-voile); color: var(--primaire); border-color: #cde3dc; }
+.message--alerte { background: var(--alerte-voile); color: var(--alerte); border-color: #e6cec4; }
+.message--succes { background: var(--succes-voile); color: var(--succes); border-color: var(--trait); }
+.message--info { background: var(--primaire-voile); color: var(--primaire); border-color: #c8d3ea; }
 
 /* -------------------------------------------------------------- Notifications */
 .notifications {
@@ -312,3 +312,56 @@
   border-color: var(--primaire);
   background: var(--primaire-voile);
 }
+
+/* ------------------------------------------------------- Pièces jointes */
+.pieces { margin-top: var(--e-4); }
+
+.pieces__liste {
+  list-style: none;
+  margin: var(--e-1) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-1);
+}
+
+.piece {
+  display: flex;
+  align-items: center;
+  gap: var(--e-3);
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: var(--surface);
+  border: 1px solid var(--trait);
+  border-radius: var(--r-md);
+  padding: 9px 12px;
+  transition: border-color var(--transition), background var(--transition);
+}
+.piece:hover:not(:disabled) { border-color: var(--primaire); background: var(--primaire-voile); }
+.piece:disabled { opacity: 0.6; cursor: wait; }
+
+.piece__type {
+  flex: none;
+  font-family: var(--police-chiffre);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--primaire);
+  background: var(--primaire-voile);
+  border-radius: var(--r-sm);
+  padding: 4px 7px;
+}
+
+.piece__nom {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--t-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.piece__nom .tenu { display: block; font-size: var(--t-xs); }
+
+.piece__action { flex: none; color: var(--primaire); font-size: var(--t-md); }

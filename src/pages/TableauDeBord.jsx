@@ -24,7 +24,7 @@ export default function TableauDeBord() {
   );
   const recettes = useRequete(() => statistiqueService.evolutionRecettes(), []);
 
-  if (chargement) return <Chargement lignes={6} />;
+  if (chargement && !donnees) return <Chargement lignes={6} />;
   if (erreur) return <Erreur message={erreur.message} surReessai={recharger} />;
   if (!donnees) {
     return (

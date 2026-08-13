@@ -29,7 +29,7 @@ export default function Parametres() {
     }
   };
 
-  if (chargement) return <Chargement lignes={5} />;
+  if (chargement && !donnees) return <Chargement lignes={5} />;
   if (erreur) return <Erreur message={erreur.message} surReessai={recharger} />;
 
   return (

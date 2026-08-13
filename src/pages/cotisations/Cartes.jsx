@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { carteService, exerciceService } from '@/services';
+import { carteService, exerciceService, exportService } from '@/services';
+import { notifier } from '@/store/notificationStore';
 import { useRequete } from '@/hooks/useRequete';
 import { Carte } from '@/components/ui/Carte';
 import Champ from '@/components/ui/Champ';
@@ -20,6 +21,24 @@ export default function Cartes() {
   const exerciceId = parametres.get('exercice_id') ?? '';
 
   const exercices = useRequete(() => exerciceService.lister(), []);
+
+  const [exportEnCours, setExportEnCours] = useState(false);
+
+  /**
+   * Édite l'état des ventes de l'exercice affiché. Sans filtre d'exercice,
+   * le serveur retient celui en cours.
+   */
+  const exporter = async () => {
+    setExportEnCours(true);
+    try {
+      const annee = (exercices.donnees ?? []).find((e) => String(e.id) === String(exerciceId))?.annee;
+      await exportService.ventesCartes({ exerciceId: exerciceId || null, annee, statut });
+    } catch (erreur) {
+      notifier.alerte(erreur.message);
+    } finally {
+      setExportEnCours(false);
+    }
+  };
 
   const filtres = useMemo(
     () => ({ statut: statut || undefined, exercice_id: exerciceId || undefined, page }),
@@ -72,6 +91,15 @@ export default function Cartes() {
               { valeur: 'soldee', libelle: 'Soldées' },
             ]}
           />
+
+          <Bouton
+            variante="contour"
+            className="pousse"
+            chargement={exportEnCours}
+            onClick={exporter}
+          >
+            {statut ? 'Exporter la sélection (PDF)' : 'Historique des ventes (PDF)'}
+          </Bouton>
         </div>
       </Carte>
 
@@ -140,14 +168,16 @@ export default function Cartes() {
         )}
       </Carte>
 
-      <PaiementManuel
-        carte={carteAEncaisser}
-        surFermeture={() => setCarteAEncaisser(null)}
-        surEnregistrement={() => {
-          setCarteAEncaisser(null);
-          recharger();
-        }}
-      />
+      {carteAEncaisser && (
+        <PaiementManuel
+          carte={carteAEncaisser}
+          surFermeture={() => setCarteAEncaisser(null)}
+          surEnregistrement={() => {
+            setCarteAEncaisser(null);
+            recharger();
+          }}
+        />
+      )}
     </div>
   );
 }

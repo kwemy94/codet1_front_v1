@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { paiementService, referentielService } from '@/services';
 import { useRequete } from '@/hooks/useRequete';
@@ -8,9 +8,46 @@ import Bouton from '@/components/ui/Bouton';
 import Champ from '@/components/ui/Champ';
 import { appliquerErreursApi, formaterMontant } from '@/utils/format';
 
-/** Saisie d'un encaissement effectué hors ligne (espèces, virement). */
-export default function PaiementManuel({ carte, surFermeture, surEnregistrement }) {
-  const referentiels = useRequete(() => referentielService.tout(), [], { actif: Boolean(carte) });
+/**
+ * Saisie d'un encaissement effectué hors ligne (espèces, virement).
+ *
+ * Le même écran règle une carte annuelle ou une contribution financière : côté
+ * serveur, un paiement porte l'un ou l'autre, jamais les deux. Passez donc soit
+ * `carte`, soit `contribution`.
+ */
+export default function PaiementManuel({ carte, contribution, surFermeture, surEnregistrement }) {
+  const objet = useMemo(() => {
+    if (carte) {
+      return {
+        genre: 'carte',
+        titre: carte.membre?.nom_complet ?? 'Carte annuelle',
+        reference: carte.numero_carte,
+        solde: carte.solde,
+        charge: { carteId: carte.id },
+        aide: 'Un paiement partiel est accepté : le solde restera dû.',
+      };
+    }
+
+    if (contribution) {
+      const regle = Number(contribution.montant_regle ?? 0);
+
+      return {
+        genre: 'contribution',
+        titre:
+          contribution.membre?.nom_complet
+          ?? contribution.donateur?.denomination
+          ?? 'Contribution',
+        reference: contribution.reference,
+        solde: Number(contribution.solde ?? contribution.montant - regle),
+        charge: { contributionId: contribution.id },
+        aide: "La contribution passe au statut « encaissée » dès que la totalité est entrée en caisse.",
+      };
+    }
+
+    return null;
+  }, [carte, contribution]);
+
+  const referentiels = useRequete(() => referentielService.tout(), [], { actif: Boolean(objet) });
 
   const {
     register,
@@ -21,15 +58,15 @@ export default function PaiementManuel({ carte, surFermeture, surEnregistrement 
   } = useForm();
 
   useEffect(() => {
-    if (carte) reset({ montant: carte.solde, observation: '' });
-  }, [carte, reset]);
+    if (objet) reset({ montant: objet.solde, observation: '' });
+  }, [objet, reset]);
 
-  if (!carte) return null;
+  if (!objet) return null;
 
   const soumettre = async (valeurs) => {
     try {
       await paiementService.enregistrerManuel({
-        carteId: carte.id,
+        ...objet.charge,
         moyenPaiementId: valeurs.moyenPaiementId,
         montant: Number(valeurs.montant),
         observation: valeurs.observation,
@@ -48,8 +85,8 @@ export default function PaiementManuel({ carte, surFermeture, surEnregistrement 
 
   return (
     <Modale
-      titre="Encaisser un paiement"
-      ouverte={Boolean(carte)}
+      titre={objet.genre === 'carte' ? 'Encaisser une carte' : 'Encaisser une contribution'}
+      ouverte
       surFermeture={surFermeture}
       pied={
         <>
@@ -65,11 +102,11 @@ export default function PaiementManuel({ carte, surFermeture, surEnregistrement 
 
         <div className="carte carte--serree" style={{ background: 'var(--surface-douce)' }}>
           <div className="rang rang--entre">
-            <span>
-              <strong>{carte.membre?.nom_complet}</strong>
-              <span className="tenu chiffre" style={{ display: 'block' }}>{carte.numero_carte}</span>
+            <span style={{ minWidth: 0 }}>
+              <strong>{objet.titre}</strong>
+              <span className="tenu chiffre" style={{ display: 'block' }}>{objet.reference}</span>
             </span>
-            <span className="montant">Solde {formaterMontant(carte.solde)}</span>
+            <span className="montant">Reste {formaterMontant(objet.solde)}</span>
           </div>
         </div>
 
@@ -77,8 +114,8 @@ export default function PaiementManuel({ carte, surFermeture, surEnregistrement 
           label="Montant encaissé"
           type="number"
           min="1"
-          max={carte.solde}
-          aide="Un paiement partiel est accepté : le solde restera dû."
+          max={objet.solde}
+          aide={objet.aide}
           erreur={errors.montant?.message}
           {...register('montant', { required: 'Indiquez le montant encaissé.' })}
         />

@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { carteService } from '@/services';
+import { useAuthStore } from '@/store/authStore';
 import { useRequete } from '@/hooks/useRequete';
 import Bouton from '@/components/ui/Bouton';
 import { Chargement, Erreur } from '@/components/ui/Etats';
@@ -15,13 +16,14 @@ import './carte-imprimable.css';
 export default function CarteImprimable() {
   const { id } = useParams();
   const navigation = useNavigate();
+  const estAdmin = useAuthStore((etat) => etat.estAdministrateur());
 
   const { donnees, chargement, erreur, recharger } = useRequete(
     () => carteService.donneesImpression(id),
     [id],
   );
 
-  if (chargement) return <Chargement lignes={5} />;
+  if (chargement && !donnees) return <Chargement lignes={5} />;
 
   if (erreur) {
     return (
@@ -49,13 +51,25 @@ export default function CarteImprimable() {
         </p>
       </div>
 
+      {estAdmin && (
+        <div className="message message--info impression__avertissement">
+          Les deux emblèmes sont des reconstitutions provisoires, redessinées d'après
+          une photographie de la carte physique. Avant une impression en série,
+          remplacez <code>public/logos/</code> par les fichiers officiels de la
+          chefferie et du comité supérieur.
+        </div>
+      )}
+
       <div className="impression__planche">
         {/* ------------------------------------------------------------ RECTO */}
         <article className="carte-cud carte-cud--recto">
           <header className="cud__entete">
-            <div className="cud__emblemes">
-              <span className="cud__embleme">Chefferie<br />supérieure</span>
-            </div>
+            <img
+              className="cud__embleme cud__embleme--gauche"
+              src={`${import.meta.env.BASE_URL}logos/chefferie-bangang.svg`}
+              alt="Chefferie supérieure de Bangang"
+              onError={(evenement) => { evenement.currentTarget.style.visibility = 'hidden'; }}
+            />
 
             <div className="cud__identite">
               <h1 className="cud__sigle">{mentions.sigle}</h1>
@@ -70,6 +84,12 @@ export default function CarteImprimable() {
             </div>
 
             <div className="cud__annee">
+              <img
+                className="cud__embleme cud__embleme--droite"
+                src={`${import.meta.env.BASE_URL}logos/cosudegbang.svg`}
+                alt={mentions.sigle}
+                onError={(evenement) => { evenement.currentTarget.style.visibility = 'hidden'; }}
+              />
               <span className="cud__slogan">{mentions.slogan}</span>
               <strong>{carte.exercice}</strong>
             </div>

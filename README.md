@@ -62,11 +62,31 @@ grep -rn "http://" src/ --include=*.jsx | grep -v config/env.js  # doit être vi
 
 ## Parti pris de design
 
-Direction retenue : **un registre de comptes porté à l'écran**. Fond très clair
-légèrement verdi, vert forêt profond pour l'action, ocre doré réservé aux montants.
-Les chiffres — matricules, montants, références — sont composés en chasse fixe
-tabulaire (`IBM Plex Mono`) pour que les colonnes s'alignent au franc près ;
-les titres en `Bricolage Grotesque`, le texte courant en `Public Sans`.
+Charte inspirée du **Ndop**, le tissu de prestige des Grassfields bamiléké :
+coton écru plongé dans une cuve d'indigo, les motifs naissant des zones réservées
+par la couture. Trois couleurs, définies dans `src/styles/tokens.css` :
+
+| Couleur | Code | Ce qu'elle est |
+|---|---|---|
+| Indigo profond | `#1E3462` | La cuve — actions, titres, en-têtes |
+| Indigo pâli | `#6C8ABF` | Les bords délavés — montants, états d'attente |
+| Écru | `#EFE9DC` | Le coton réservé — fonds, surfaces, traits |
+
+Tout le reste descend de ces trois teintes par éclaircissement ou assombrissement,
+y compris les encres (indigo désaturé, jamais du noir). **Une seule couleur sort
+de la palette** : une terre cuite `#9C4A2F`, réservée aux impayés — un trésorier
+doit les repérer sans lire.
+
+Le **ruban de ventilation** se lit comme un dégradé de cuve : village en indigo
+profond, groupement en indigo moyen, congrès en indigo clair, compte du comité en
+écru sombre. Les segments sont séparés par une fine couture écrue, exactement le
+procédé qui fait naître les motifs d'un Ndop — et qui règle au passage la
+distinction de deux teintes voisines.
+
+Tous les contrastes ont été vérifiés au seuil WCAG AA. Les chiffres — matricules,
+montants, références — sont composés en chasse fixe tabulaire (`IBM Plex Mono`)
+pour que les colonnes s'alignent au franc près ; les titres en
+`Bricolage Grotesque`, le texte courant en `Public Sans`.
 
 **Élément signature : le ruban de ventilation.** Chaque franc encaissé se répartit
 entre le village, le groupement et le congrès. Le composant `RubanVentilation`

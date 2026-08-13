@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { membreService, referentielService } from '@/services';
+import { exportService, membreService, referentielService } from '@/services';
 import { useRequete } from '@/hooks/useRequete';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useAuthStore } from '@/store/authStore';
@@ -9,6 +9,7 @@ import { Carte } from '@/components/ui/Carte';
 import Bouton from '@/components/ui/Bouton';
 import Champ from '@/components/ui/Champ';
 import Etiquette from '@/components/ui/Etiquette';
+import StatutMembre from '@/components/donnees/StatutMembre';
 import Pagination from '@/components/ui/Pagination';
 import { Chargement, Erreur, Vide } from '@/components/ui/Etats';
 import FormulaireMembre from './FormulaireMembre';
@@ -21,6 +22,7 @@ export default function ListeMembres() {
   const [categorieId, setCategorieId] = useState('');
   const [page, setPage] = useState(1);
   const [formulaireOuvert, setFormulaireOuvert] = useState(false);
+  const [exportEnCours, setExportEnCours] = useState(null);
 
   const rechercheRetardee = useDebounce(recherche);
 
@@ -48,13 +50,15 @@ export default function ListeMembres() {
     setPage(1);
   };
 
-  const suspendre = async (membre) => {
+  /** Édite l'historique du membre sans quitter la liste de recherche. */
+  const exporterHistorique = async (membre) => {
+    setExportEnCours(membre.id);
     try {
-      await membreService.suspendre(membre.id);
-      notifier.succes(`${membre.nom_complet} est suspendu.`);
-      recharger();
+      await exportService.historiqueMembre(membre.id, membre.matricule);
     } catch (probleme) {
       notifier.alerte(probleme.message);
+    } finally {
+      setExportEnCours(null);
     }
   };
 
@@ -142,13 +146,28 @@ export default function ListeMembres() {
                       <td className="silence">{membre.categorie?.libelle ?? '—'}</td>
                       <td className="chiffre">{membre.telephone}</td>
                       <td className="silence">{formaterDate(membre.date_adhesion)}</td>
-                      <td><Etiquette statut={membre.statut} /></td>
+                      <td title={membre.motif_statut ?? undefined}>
+                        <Etiquette statut={membre.statut} />
+                        {membre.motif_statut && membre.statut !== 'actif' && (
+                          <span className="tenu" style={{ display: 'block', maxWidth: 180 }}>
+                            {membre.motif_statut}
+                          </span>
+                        )}
+                      </td>
                       <td className="col-nombre">
-                        {estAdmin && membre.statut === 'actif' && (
-                          <Bouton variante="discret" taille="petit" onClick={() => suspendre(membre)}>
-                            Suspendre
+                        <div className="rang rang--fin" style={{ gap: 'var(--e-1)', flexWrap: 'wrap' }}>
+                        {estAdmin && (
+                          <Bouton
+                            variante="discret"
+                            taille="petit"
+                            chargement={exportEnCours === membre.id}
+                            onClick={() => exporterHistorique(membre)}
+                          >
+                            Historique
                           </Bouton>
                         )}
+                        {estAdmin && <StatutMembre membre={membre} surChangement={recharger} />}
+                        </div>
                       </td>
                     </tr>
                   ))}

@@ -16,6 +16,7 @@
   flex-wrap: wrap;
 }
 .impression__conseil { flex: 1 1 260px; margin: 0; }
+.impression__avertissement { max-width: 700px; }
 
 .impression__planche {
   display: flex;
@@ -48,19 +49,9 @@
 /* ------------------------------------------------------------------ Recto */
 .cud__entete { display: flex; align-items: flex-start; gap: 1.5mm; }
 
-.cud__emblemes { flex: none; width: 13mm; }
-.cud__embleme {
-  display: block;
-  border: 0.4mm solid var(--cud-bleu);
-  border-radius: 1mm;
-  padding: 1mm 0.5mm;
-  font-size: 4pt;
-  line-height: 1.15;
-  text-align: center;
-  color: var(--cud-bleu);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
+.cud__embleme { display: block; flex: none; }
+.cud__embleme--gauche { width: 13mm; height: 13mm; }
+.cud__embleme--droite { width: 13mm; height: auto; margin: 0 auto 0.4mm; }
 
 .cud__identite { flex: 1; text-align: center; min-width: 0; }
 
@@ -249,7 +240,8 @@
     display: block;
   }
 
-  .impression__barre { display: none; }
+  .impression__barre,
+  .impression__avertissement { display: none; }
 
   .carte-cud {
     box-shadow: none;

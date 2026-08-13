@@ -18,12 +18,21 @@ export const membreService = {
     return extraire(await httpClient.put(`/membres/${id}`, membre));
   },
 
-  async suspendre(id) {
-    return extraire(await httpClient.post(`/membres/${id}/suspendre`));
+  /**
+   * Suspension : réversible, elle sort le membre des listes actives et ferme
+   * son accès. Ses cotisations et ses dons restent aux comptes du comité.
+   */
+  async suspendre(id, motif) {
+    return extraire(await httpClient.post(`/membres/${id}/suspendre`, { motif }));
   },
 
-  async reactiver(id) {
-    return extraire(await httpClient.post(`/membres/${id}/reactiver`));
+  async reactiver(id, motif) {
+    return extraire(await httpClient.post(`/membres/${id}/reactiver`, { motif }));
+  },
+
+  /** Constat de décès : définitif, distinct d'une suspension. */
+  async declarerDecede(id, dateDeces) {
+    return extraire(await httpClient.post(`/membres/${id}/decede`, { date_deces: dateDeces }));
   },
 
   /**
