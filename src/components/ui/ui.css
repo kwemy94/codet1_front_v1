@@ -28,6 +28,10 @@
 .bouton--discret { background: transparent; color: var(--encre-douce); padding: 8px 10px; }
 .bouton--discret:hover:not(:disabled) { background: var(--surface-douce); color: var(--encre); }
 
+/* Bouton posé sur un fond indigo : la barre de sélection, notamment. */
+.bouton--clair { background: rgba(255, 255, 255, 0.16); color: #fff; border-color: rgba(255, 255, 255, 0.3); }
+.bouton--clair:hover:not(:disabled) { background: rgba(255, 255, 255, 0.28); }
+
 .bouton--danger { background: var(--alerte-voile); color: var(--alerte); border-color: transparent; }
 .bouton--danger:hover:not(:disabled) { background: var(--alerte); color: #fff; }
 

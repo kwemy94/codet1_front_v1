@@ -1,8 +1,8 @@
-import httpClient, { extraire } from './httpClient';
+import httpClient, { extraire } from "./httpClient";
 
 export const carteService = {
   async lister(filtres = {}) {
-    return (await httpClient.get('/cartes', { params: filtres })).data;
+    return (await httpClient.get("/cartes", { params: filtres })).data;
   },
 
   async consulter(id) {
@@ -11,8 +11,22 @@ export const carteService = {
 
   async emettre({ membreId, exerciceId, typeCarteId }) {
     return extraire(
-      await httpClient.post('/cartes', {
+      await httpClient.post("/cartes", {
         membre_id: membreId,
+        exercice_id: exerciceId,
+        type_carte_id: typeCarteId,
+      }),
+    );
+  },
+
+  /**
+   * Émission groupée. Chaque membre est traité indépendamment : le rapport
+   * distingue les cartes émises des échecs, avec leur motif.
+   */
+  async emettreEnLot({ membreIds, exerciceId, typeCarteId }) {
+    return extraire(
+      await httpClient.post("/cartes/lot", {
+        membre_ids: membreIds,
         exercice_id: exerciceId,
         type_carte_id: typeCarteId,
       }),
@@ -28,7 +42,7 @@ export const carteService = {
   },
 
   async impayes(filtres = {}) {
-    return (await httpClient.get('/cartes/impayes', { params: filtres })).data;
+    return (await httpClient.get("/cartes/impayes", { params: filtres })).data;
   },
 };
 

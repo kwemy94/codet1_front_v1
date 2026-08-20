@@ -1,8 +1,8 @@
-import httpClient, { extraire } from './httpClient';
+import httpClient, { extraire } from "./httpClient";
 
 export const paiementService = {
   async lister(filtres = {}) {
-    return (await httpClient.get('/paiements', { params: filtres })).data;
+    return (await httpClient.get("/paiements", { params: filtres })).data;
   },
 
   async consulter(id) {
@@ -10,9 +10,15 @@ export const paiementService = {
   },
 
   /** Paiement mobile money déclenché par le membre. */
-  async initier({ carteId, contributionId, montant, moyenPaiement, numeroTelephone }) {
+  async initier({
+    carteId,
+    contributionId,
+    montant,
+    moyenPaiement,
+    numeroTelephone,
+  }) {
     return extraire(
-      await httpClient.post('/paiements/initier', {
+      await httpClient.post("/paiements/initier", {
         carte_developpement_id: carteId ?? null,
         contribution_id: contributionId ?? null,
         montant,
@@ -23,13 +29,42 @@ export const paiementService = {
   },
 
   /** Encaissement hors ligne saisi par un administrateur. */
-  async enregistrerManuel({ carteId, contributionId, moyenPaiementId, montant, observation }) {
+  async enregistrerManuel({
+    carteId,
+    contributionId,
+    moyenPaiementId,
+    montant,
+    observation,
+  }) {
     return extraire(
-      await httpClient.post('/paiements/manuel', {
+      await httpClient.post("/paiements/manuel", {
         carte_developpement_id: carteId ?? null,
         contribution_id: contributionId ?? null,
         moyen_paiement_id: moyenPaiementId,
         montant,
+        observation,
+      }),
+    );
+  },
+
+  /**
+   * Encaissement groupé de plusieurs cartes.
+   * `mode` vaut « solde » (chaque carte réglée de ce qu'il lui reste) ou
+   * « montant » (même somme appliquée à chacune, plafonnée au solde).
+   */
+  async encaisserEnLot({
+    carteIds,
+    moyenPaiementId,
+    mode = "solde",
+    montant,
+    observation,
+  }) {
+    return extraire(
+      await httpClient.post("/paiements/lot", {
+        carte_ids: carteIds,
+        moyen_paiement_id: moyenPaiementId,
+        mode,
+        montant: mode === "montant" ? montant : undefined,
         observation,
       }),
     );
@@ -41,7 +76,9 @@ export const paiementService = {
   },
 
   async annuler(id, motif) {
-    return extraire(await httpClient.post(`/paiements/${id}/annuler`, { motif }));
+    return extraire(
+      await httpClient.post(`/paiements/${id}/annuler`, { motif }),
+    );
   },
 };
 
